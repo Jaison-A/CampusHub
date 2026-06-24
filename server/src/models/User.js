@@ -1,0 +1,37 @@
+import mongoose from 'mongoose';
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    // rollno: {
+    //   type: Number,
+    //   unique: true,
+    // },
+    email: {
+      type: String,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['student', 'teacher', 'monitor', 'admin'],
+      default: 'student',
+    },
+    semester: {
+      type: Number,
+      required: true,
+    },
+    department: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+export default mongoose.model('User', userSchema);

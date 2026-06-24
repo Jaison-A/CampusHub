@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+
+/* Smooth theme transition */
+* {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Better font rendering */
+body {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* Nice scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* addNotes style  */
+select option {
+  background-color: white;
+  color: black;
+}
+
+.dark select option {
+  background-color: #374151;
+  color: white;
+}
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+.dark input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
