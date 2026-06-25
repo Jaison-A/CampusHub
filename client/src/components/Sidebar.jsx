@@ -1,15 +1,20 @@
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Sidebar() {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem('token');
-    alert('Logged out successfully!');
-    navigate('/login');
+    toast.success('Logged out successfully!');
+    setTimeout(() => navigate('/login'), 1000);
   };
   return (
-    <aside className="w-64 h-screen bg-gray-800 text-white p-5 sticky top-0">
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <aside className="w-64 h-screen bg-gray-800 text-white p-5 sticky top-0">
       <h2 className="text-2xl text-red-500 font-bold mb-8">CampusHub</h2>
 
       <nav>
@@ -67,6 +72,7 @@ function Sidebar() {
         Log Out
       </button>
     </aside>
+    </>
   );
 }
 

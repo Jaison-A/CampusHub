@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import API from '../api/axios';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function EditAssignment() {
   const { id } = useParams();
@@ -62,16 +65,18 @@ function EditAssignment() {
         },
       });
 
-      alert('Assignment Updated');
-
-      navigate('/assignments');
+      toast.success('Assignment Updated Successfully!');
+      setTimeout(() => navigate('/assignments'), 1000);
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || 'Failed to update assignment');
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Edit Assignment</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,6 +159,7 @@ function EditAssignment() {
         </div>
       </form>
     </div>
+    </>
   );
 }
 

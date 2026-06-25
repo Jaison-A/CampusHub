@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import API from '../api/axios';
 import AssignmentCard from '../components/AssignmentCard';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Assignments() {
   const [assignments, setAssignments] = useState([]);
@@ -88,7 +91,7 @@ function Assignments() {
         },
       );
 
-      alert('Status Updated');
+      toast.success('Status Updated Successfully!');
     } catch (error) {
       console.log(error);
     }
@@ -96,7 +99,9 @@ function Assignments() {
   */
 
   return (
-    <div className="space-y-6">
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Assignments</h1>
@@ -135,6 +140,7 @@ function Assignments() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

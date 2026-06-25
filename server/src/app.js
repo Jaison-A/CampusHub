@@ -14,6 +14,7 @@ import cors from 'cors';
 
 const allowedOrigins = [
   'https://campus-ajlp8g15i-shadowxvera.vercel.app',
+  'https://campus-hub-xi-eight.vercel.app',
   'http://localhost:5173',
   'http://localhost:3000',
   'http://127.0.0.1:5173',

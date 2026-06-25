@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import API from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AddAssignment() {
   const navigate = useNavigate();
@@ -33,15 +36,18 @@ function AddAssignment() {
         },
       });
 
-      alert('Assignment Created');
-      navigate('/assignments');
+      toast.success('Assignment Created Successfully!');
+      setTimeout(() => navigate('/assignments'), 1000);
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || 'Failed to create assignment');
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="max-w-2xl mx-auto">
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">Add Assignment</h1>
@@ -221,6 +227,7 @@ function AddAssignment() {
         </form>
       </div>
     </div>
+    </>
   );
 }
 
