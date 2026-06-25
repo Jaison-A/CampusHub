@@ -10,7 +10,13 @@ import announcementRoutes from './routes/announcementRoutes.js';
 
 const app = express();
 
-app.use(cors());
+import cors from 'cors';
+
+app.use(
+  cors({
+    origin: 'https://campus-hub-seven-vert.vercel.app',
+  }),
+);
 app.use(express.json());
 app.get('/', (req, res) => {
   res.send('server runing');
