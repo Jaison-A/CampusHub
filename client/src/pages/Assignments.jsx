@@ -102,44 +102,44 @@ function Assignments() {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Assignments</h1>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Assignments</h1>
 
-          <p className="text-gray-500 dark:text-gray-400">
-            Manage and track your assignments
-          </p>
+            <p className="text-gray-500 dark:text-gray-400">
+              Manage and track your assignments
+            </p>
+          </div>
+
+          {canManage && (
+            <Link to="/add-assignment">
+              <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md">
+                + Add Assignment
+              </button>
+            </Link>
+          )}
         </div>
 
-        {canManage && (
-          <Link to="/add-assignment">
-            <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md">
-              + Add Assignment
-            </button>
-          </Link>
+        {assignments.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-md">
+            <h2 className="text-xl font-semibold">No Assignments Found</h2>
+
+            <p className="text-gray-500 mt-2">
+              There are currently no assignments available.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-5">
+            {assignments.map((assignment) => (
+              <AssignmentCard
+                key={assignment._id}
+                assignment={assignment}
+                deleteAssignment={deleteAssignment}
+              />
+            ))}
+          </div>
         )}
       </div>
-
-      {assignments.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-md">
-          <h2 className="text-xl font-semibold">No Assignments Found</h2>
-
-          <p className="text-gray-500 mt-2">
-            There are currently no assignments available.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-5">
-          {assignments.map((assignment) => (
-            <AssignmentCard
-              key={assignment._id}
-              assignment={assignment}
-              deleteAssignment={deleteAssignment}
-            />
-          ))}
-        </div>
-      )}
-    </div>
     </>
   );
 }

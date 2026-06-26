@@ -7,6 +7,8 @@ import Notes from '../pages/Notes';
 import Assignments from '../pages/Assignments';
 import Profile from '../pages/Profile';
 import MyProgress from '../pages/MyProgress';
+import ClassProgress from '../pages/ClassProgress';
+import AssignmentProgressDetails from '../pages/AssignmentProgressDetails';
 import AddAssignment from '../pages/AddAssignment';
 import AddNotes from '../pages/AddNotes';
 import Layout from '../components/Layout';
@@ -58,6 +60,26 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <MyProgress />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/class-progress"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ClassProgress />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/class-progress/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AssignmentProgressDetails />
               </Layout>
             </ProtectedRoute>
           }

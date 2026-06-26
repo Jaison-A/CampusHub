@@ -10,8 +10,6 @@ import announcementRoutes from './routes/announcementRoutes.js';
 
 const app = express();
 
-import cors from 'cors';
-
 const allowedOrigins = [
   'https://campus-ajlp8g15i-shadowxvera.vercel.app',
   'https://campus-hub-xi-eight.vercel.app',
@@ -20,7 +18,7 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:3000',
 ];
-
+// app.use(cors());
 app.use(
   cors({
     origin: (origin, callback) => {
