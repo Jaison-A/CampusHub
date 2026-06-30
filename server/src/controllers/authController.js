@@ -12,16 +12,22 @@ export const registerUser = async (req, res) => {
         message: 'User Alredy Exist',
       });
     }
+
+    const jwtSecret = process.env.JWT_SECRET || 'campushub-dev-secret';
+    const normalizedSemester = Number(semester) || 1;
+    const normalizedDepartment = department || 'cse';
+    const normalizedRole = role || 'student';
+
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       rollno,
       password: hashPassword,
-      semester,
-      department,
-      role,
+      semester: normalizedSemester,
+      department: normalizedDepartment,
+      role: normalizedRole,
     });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, jwtSecret, {
       expiresIn: '7d',
     });
 
@@ -54,11 +60,12 @@ export const loginUser = async (req, res) => {
         message: 'Invalid credentials',
       });
     }
+    const jwtSecret = process.env.JWT_SECRET || 'campushub-dev-secret';
     const token = jwt.sign(
       {
         id: user._id,
       },
-      process.env.JWT_SECRET,
+      jwtSecret,
       {
         expiresIn: '7d',
       },
