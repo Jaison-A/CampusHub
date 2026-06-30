@@ -61,17 +61,22 @@ export const getAssignmentProgress = async (req, res) => {
   try {
     const viewerRole = req.user?.role;
     const visibleRoles = ['student', 'monitor'];
+    const assignmentFilter = {};
 
-    if (['teacher', 'admin'].includes(viewerRole)) {
-      return res.status(200).json([]);
+    if (req.user?.semester) {
+      assignmentFilter.semester = req.user.semester;
+    }
+
+    if (req.user?.department) {
+      assignmentFilter.department = req.user.department;
     }
 
     const assignments = await mongoose
       .model('Assignment')
-      .find({}, 'title subject');
+      .find(assignmentFilter, 'title subject semester department');
     const users = await User.find({ role: { $in: visibleRoles } }, 'name role');
     const submissions = await Submission.find({})
-      .populate('assignment', 'title subject')
+      .populate('assignment', 'title subject semester department')
       .populate('student', 'name role');
 
     const groupedProgress = {};
@@ -146,7 +151,67 @@ export const getAssignmentProgressById = async (req, res) => {
     const visibleRoles = ['student', 'monitor'];
 
     if (['teacher', 'admin'].includes(viewerRole)) {
-      return res.status(200).json(null);
+      const assignment = await mongoose
+        .model('Assignment')
+        .findById(id, 'title subject semester department');
+      if (!assignment) {
+        return res.status(404).json({ message: 'Assignment not found' });
+      }
+
+      const users = await User.find(
+        { role: { $in: visibleRoles } },
+        'name role',
+      );
+      const submissions = await Submission.find({ assignment: id })
+        .populate('assignment', 'title subject semester department')
+        .populate('student', 'name role');
+
+      const entry = {
+        assignmentId: id,
+        assignmentTitle: assignment.title || 'Assignment',
+        assignmentSubject: assignment.subject || '',
+        counts: {
+          Completed: 0,
+          'In Progress': 0,
+          'Not Started': 0,
+        },
+        students: [],
+      };
+
+      const submissionMap = new Map(
+        submissions.map((submission) => [
+          submission.student?._id?.toString(),
+          submission,
+        ]),
+      );
+
+      users.forEach((user) => {
+        const submission = submissionMap.get(user._id.toString());
+        const status = submission
+          ? normalizeStatus(submission.status)
+          : 'Not Started';
+
+        entry.counts[status] += 1;
+        entry.students.push({
+          studentId: user._id,
+          name: user.name,
+          role: user.role,
+          status,
+          submittedAt: submission?.submittedAt || null,
+        });
+      });
+
+      entry.students.sort((a, b) => {
+        const statusOrder = {
+          Completed: 0,
+          'In Progress': 1,
+          'Not Started': 2,
+        };
+
+        return statusOrder[a.status] - statusOrder[b.status];
+      });
+
+      return res.status(200).json(entry);
     }
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
