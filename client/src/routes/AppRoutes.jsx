@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
@@ -7,19 +7,32 @@ import Notes from '../pages/Notes';
 import Assignments from '../pages/Assignments';
 import Profile from '../pages/Profile';
 import MyProgress from '../pages/MyProgress';
+import ClassProgress from '../pages/ClassProgress';
+import AssignmentProgressDetails from '../pages/AssignmentProgressDetails';
 import AddAssignment from '../pages/AddAssignment';
 import AddNotes from '../pages/AddNotes';
 import Layout from '../components/Layout';
 import EditAssignment from '../pages/EditAssignment';
 import EditNote from '../pages/EditNote';
 import ViewPdf from '../pages/ViewPdf';
-import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+function AuthRedirect() {
+  const { token } = useAuth();
+  const isAuthenticated = Boolean(token || localStorage.getItem('token'));
+
+  return isAuthenticated ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<AuthRedirect />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -58,6 +71,26 @@ function AppRoutes() {
             <ProtectedRoute>
               <Layout>
                 <MyProgress />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/class-progress"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ClassProgress />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/class-progress/:id"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <AssignmentProgressDetails />
               </Layout>
             </ProtectedRoute>
           }

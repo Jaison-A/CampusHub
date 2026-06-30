@@ -1,9 +1,18 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
+
+  useEffect(() => {
+    const syncToken = () => {
+      setToken(localStorage.getItem('token'));
+    };
+
+    window.addEventListener('storage', syncToken);
+    return () => window.removeEventListener('storage', syncToken);
+  }, []);
 
   const login = (jwt) => {
     localStorage.setItem('token', jwt);
@@ -12,6 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
   };
 

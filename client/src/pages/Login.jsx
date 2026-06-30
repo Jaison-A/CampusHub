@@ -4,22 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const { login } = useAuth();
+  const [rollno, setRollno] = useState('');
   const [password, setPassword] = useState('');
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/auth/login', { email, password });
-      localStorage.setItem('token', res.data.token);
-
+      const res = await API.post('/auth/login', { rollno, password });
+      login(res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
       toast.success('Login Successful!');
 
-      setTimeout(() => navigate('/dashboard'), 1000);
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login Failed');
     }
@@ -39,12 +40,14 @@ function Login() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
+              <label className="block text-sm font-medium mb-1">
+                Roll Number
+              </label>
 
               <input
-                type="email"
-                placeholder="Enter your email"
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Enter your roll number"
+                onChange={(e) => setRollno(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
           bg-white dark:bg-gray-800
           focus:outline-none focus:ring-2 focus:ring-red-500 hover:border-red-400 transition-200"

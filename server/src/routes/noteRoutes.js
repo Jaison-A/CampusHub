@@ -20,7 +20,7 @@ router.post(
   upload.single('pdf'),
   createNote,
 );
-router.get('/', getNotes);
+router.get('/', protect, getNotes);
 router.get('/:id', protect, getNoteById);
 
 router.put(

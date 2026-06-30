@@ -19,10 +19,12 @@ export const createAssignment = async (req, res) => {
 
 export const getAssignments = async (req, res) => {
   try {
-    const assignments = await Assignment.find({
-      semester: req.user.semester,
-      department: req.user.department,
-    });
+    const filter =
+      req.user?.role === 'student' && req.user?.semester
+        ? { semester: req.user.semester }
+        : {};
+
+    const assignments = await Assignment.find(filter).sort({ dueDate: 1 });
     res.status(200).json(assignments);
   } catch (err) {
     res.status(500).json({
