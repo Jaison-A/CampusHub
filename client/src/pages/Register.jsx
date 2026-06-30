@@ -4,11 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [rollno, setRollno] = useState('');
   const [password, setPassword] = useState('');
@@ -28,18 +26,19 @@ function Register() {
         department,
         role,
       });
-      login(res.data.token);
+      localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
       toast.success('Registration Successful!');
 
-      navigate('/dashboard', { replace: true });
+      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registeration Failed');
     }
   };
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-full max-w-md bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
           <div className="text-center mb-6">
