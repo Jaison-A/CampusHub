@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, department, semester, role } = req.body;
+    const { name, rollno, password, department, semester, role } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ rollno });
     if (existingUser) {
       return res.status(400).json({
         message: 'User Alredy Exist',
@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
-      email,
+      rollno,
       password: hashPassword,
       semester,
       department,
@@ -41,8 +41,8 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { rollno, password } = req.body;
+    const user = await User.findOne({ rollno });
     if (!user) {
       return res.status(400).json({
         message: 'invalid User',

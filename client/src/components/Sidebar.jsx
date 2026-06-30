@@ -8,7 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 function Sidebar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const canViewClassProgress = ['student', 'monitor'].includes(user?.role);
+  const canViewClassProgress = ['student', 'monitor', 'teacher'].includes(
+    user?.role,
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {

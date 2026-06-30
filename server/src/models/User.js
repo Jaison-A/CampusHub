@@ -5,13 +5,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // rollno: {
-    //   type: Number,
-    //   unique: true,
-    // },
-    email: {
+    rollno: {
       type: String,
       unique: true,
+      required: true,
     },
     password: {
       type: String,

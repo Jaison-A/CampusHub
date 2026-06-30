@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Profile() {
   const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ semester: '' });
   const navigate = useNavigate();
   useEffect(() => {
     const fetchProfile = async () => {
@@ -21,6 +23,7 @@ function Profile() {
         });
 
         setUser(res.data);
+        setFormData({ semester: res.data.semester || '' });
       } catch (error) {
         console.log(error);
       }
@@ -30,9 +33,42 @@ function Profile() {
   }, []);
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     toast.success('Logged out successfully!');
     setTimeout(() => navigate('/login'), 1000);
   };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('token');
+      const res = await API.put(
+        '/users/profile',
+        { semester: Number(formData.semester) },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setUser((prev) => ({ ...prev, semester: res.data.semester }));
+      localStorage.setItem(
+        'user',
+        JSON.stringify({ ...user, semester: res.data.semester }),
+      );
+      setIsEditing(false);
+      toast.success('Semester updated successfully!');
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to update profile');
+    }
+  };
+
   if (!user) return <Loading />;
 
   return (
@@ -49,8 +85,8 @@ function Profile() {
           </div>
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-gray-500">Email</p>
-              <p className="font-semibold">{user.email}</p>
+              <p className="text-gray-500">Roll Number</p>
+              <p className="font-semibold">{user.rollno}</p>
             </div>
             <div>
               <p className="text-gray-500">Department</p>
@@ -58,7 +94,36 @@ function Profile() {
             </div>
             <div>
               <p className="text-gray-500">Semester</p>
-              <p className="font-semibold">{user.semester}</p>
+              {isEditing ? (
+                <form onSubmit={handleSaveProfile} className="mt-2 space-y-3">
+                  <input
+                    type="number"
+                    name="semester"
+                    min="1"
+                    max="8"
+                    value={formData.semester}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(false)}
+                      className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <p className="font-semibold">{user.semester}</p>
+              )}
             </div>
 
             <div>
@@ -67,7 +132,13 @@ function Profile() {
             </div>
           </div>
           <div className="mt-8 flex gap-5">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+            <button
+              onClick={() => {
+                setFormData({ semester: user?.semester || '' });
+                setIsEditing(true);
+              }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
               Edit Profile
             </button>
 

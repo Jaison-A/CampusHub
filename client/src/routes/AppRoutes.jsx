@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Dashboard from '../pages/Dashboard';
@@ -15,13 +15,24 @@ import Layout from '../components/Layout';
 import EditAssignment from '../pages/EditAssignment';
 import EditNote from '../pages/EditNote';
 import ViewPdf from '../pages/ViewPdf';
-import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+function AuthRedirect() {
+  const { token } = useAuth();
+  const isAuthenticated = Boolean(token || localStorage.getItem('token'));
+
+  return isAuthenticated ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<AuthRedirect />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route

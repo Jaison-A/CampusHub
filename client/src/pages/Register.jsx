@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const [email, setEmail] = useState('');
+  const [rollno, setRollno] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [role, setRole] = useState('student');
@@ -20,18 +22,18 @@ function Register() {
     try {
       const res = await API.post('/auth/register', {
         name,
-        email,
+        rollno,
         password,
         semester,
         department,
         role,
       });
-      localStorage.setItem('token', res.data.token);
+      login(res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
 
       toast.success('Registration Successful!');
 
-      setTimeout(() => navigate('/dashboard'), 1000);
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registeration Failed');
     }
@@ -50,12 +52,14 @@ function Register() {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
+              <label className="block text-sm font-medium mb-1">
+                Roll Number
+              </label>
 
               <input
-                type="email"
-                placeholder="Enter your email"
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Enter your roll number"
+                onChange={(e) => setRollno(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 hover:border-gray-400 dark:border-gray-600 rounded-lg
           bg-white dark:bg-gray-800
           focus:outline-none focus:ring-2 focus:ring-red-500

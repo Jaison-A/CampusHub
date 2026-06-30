@@ -52,11 +52,12 @@ export const createNote = async (req, res) => {
 
 export const getNotes = async (req, res) => {
   try {
-    // const notes = await Note.find({
-    //   semester: req.user.semester,
-    //   department: req.user.department,
-    // });
-    const notes = await Note.find();
+    const query =
+      req.user?.role === 'student' && req.user?.semester
+        ? { semester: req.user.semester }
+        : {};
+
+    const notes = await Note.find(query).sort({ createdAt: -1 });
     res.status(200).json(notes);
   } catch (err) {
     res.status(500).json({
