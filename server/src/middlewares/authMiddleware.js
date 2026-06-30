@@ -9,7 +9,8 @@ const protect = async (req, res, next) => {
       req.headers.authorization.startsWith('Bearer')
     ) {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const jwtSecret = process.env.JWT_SECRET || 'campushub-dev-secret';
+      const decoded = jwt.verify(token, jwtSecret);
       req.user = await User.findById(decoded.id).select('-password');
       next();
     } else {
