@@ -37,6 +37,8 @@ export const registerUser = async (req, res) => {
       token,
     });
   } catch (err) {
+    console.error('REGISTER ERROR:', err);
+
     res.status(500).json({
       message: err.message,
     });
